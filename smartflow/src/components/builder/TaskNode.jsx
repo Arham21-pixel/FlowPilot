@@ -1,5 +1,5 @@
 // components/builder/TaskNode.jsx
-// Custom React Flow node — how each task looks on canvas
+// Custom React Flow node — wide strip handles for easy connection drawing
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 
@@ -22,11 +22,12 @@ function TaskNode({ data, selected }) {
       className={`task-node ${selected ? 'selected' : ''}`}
       style={{ borderLeft: `3px solid ${cfg.border}` }}
     >
-      {/* Input handle (top) */}
+      {/* Input handle (top) — wide strip for easy grabbing */}
       <Handle
         type="target"
         position={Position.Top}
-        style={{ background: cfg.color }}
+        className="handle-strip handle-strip--top"
+        style={{ '--handle-color': cfg.color }}
       />
 
       {/* Header */}
@@ -56,11 +57,12 @@ function TaskNode({ data, selected }) {
         </div>
       </div>
 
-      {/* Output handle (bottom) */}
+      {/* Output handle (bottom) — wide strip for easy grabbing */}
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{ background: cfg.color }}
+        className="handle-strip handle-strip--bottom"
+        style={{ '--handle-color': cfg.color }}
       />
     </div>
   );

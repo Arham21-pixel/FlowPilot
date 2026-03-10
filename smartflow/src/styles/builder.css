@@ -315,31 +315,116 @@
 /* Edges */
 .canvas-wrap .react-flow__edge-path {
   stroke: #c8c4b8;
-  stroke-width: 1.5;
+  stroke-width: 2;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.canvas-wrap .react-flow__edge:hover .react-flow__edge-path {
+  stroke: var(--accent);
+  stroke-width: 2.5;
 }
 
 .canvas-wrap .react-flow__edge.selected .react-flow__edge-path {
   stroke: var(--accent);
-  stroke-width: 2;
+  stroke-width: 2.5;
 }
 
+/* Connection line while dragging */
 .canvas-wrap .react-flow__connection-line {
   stroke: var(--accent);
-  stroke-width: 1.5;
+  stroke-width: 2.5;
+  stroke-dasharray: 6 3;
+  animation: dashFlow 0.4s linear infinite;
 }
 
-/* Handles — hidden by default, show on node hover */
-.canvas-wrap .react-flow__handle {
-  width: 8px !important;
+@keyframes dashFlow {
+  to { stroke-dashoffset: -9; }
+}
+
+/* ── Handle strips — wide bars for easy connection drawing ── */
+.canvas-wrap .react-flow__handle.handle-strip {
+  width: 60% !important;
   height: 8px !important;
-  border-radius: 50%;
+  border-radius: 6px !important;
   border: 2px solid #ffffff !important;
-  opacity: 0;
-  transition: opacity 0.15s ease;
+  background: var(--handle-color, #c8c4b8) !important;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+  cursor: crosshair !important;
+  z-index: 10;
+  left: 50% !important;
+  transform: translateX(-50%);
 }
 
-.canvas-wrap .react-flow__node:hover .react-flow__handle {
+/* Top handle positioned above the node */
+.canvas-wrap .react-flow__handle.handle-strip--top {
+  top: -4px !important;
+}
+
+/* Bottom handle positioned below the node */
+.canvas-wrap .react-flow__handle.handle-strip--bottom {
+  bottom: -4px !important;
+}
+
+/* Larger invisible hit area for even easier grabbing */
+.canvas-wrap .react-flow__handle.handle-strip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 20px);
+  height: 28px;
+  background: transparent;
+  cursor: crosshair;
+}
+
+/* Show handles fully on node hover */
+.canvas-wrap .react-flow__node:hover .handle-strip {
   opacity: 1;
+  height: 10px !important;
+  box-shadow: 0 0 0 3px rgba(232, 200, 74, 0.2);
+}
+
+/* Handle hover — glow effect */
+.canvas-wrap .react-flow__handle.handle-strip:hover {
+  opacity: 1 !important;
+  height: 12px !important;
+  width: 70% !important;
+  box-shadow: 0 0 0 5px rgba(232, 200, 74, 0.3), 0 0 14px rgba(232, 200, 74, 0.25);
+}
+
+/* While connecting — pulse all valid targets */
+.canvas-wrap .react-flow__handle.handle-strip.connectingto,
+.canvas-wrap .react-flow__handle.handle-strip.connectingfrom {
+  animation: stripPulse 0.8s ease infinite;
+  opacity: 1 !important;
+}
+
+/* Valid drop target — green glow */
+.canvas-wrap .react-flow__handle-valid {
+  background: #2d8a56 !important;
+  box-shadow: 0 0 0 5px rgba(45, 138, 86, 0.35), 0 0 14px rgba(45, 138, 86, 0.25) !important;
+  opacity: 1 !important;
+  height: 12px !important;
+  width: 80% !important;
+}
+
+@keyframes stripPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(232, 200, 74, 0.25); }
+  50%      { box-shadow: 0 0 0 7px rgba(232, 200, 74, 0.45), 0 0 18px rgba(232, 200, 74, 0.2); }
+}
+
+/* Fallback for any non-strip handles */
+.canvas-wrap .react-flow__handle:not(.handle-strip) {
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50%;
+  border: 2.5px solid #ffffff !important;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  cursor: crosshair !important;
+  z-index: 10;
 }
 
 /* Controls */

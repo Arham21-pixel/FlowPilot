@@ -6,6 +6,8 @@ import ReactFlow, {
   Controls,
   MiniMap,
   addEdge,
+  applyNodeChanges,
+  applyEdgeChanges,
   ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -32,49 +34,18 @@ function FlowCanvasInner({ nodes, edges, setNodes, setEdges }) {
     [setEdges]
   );
 
-  // Handle node changes (drag, select, remove)
+  // Handle node changes (drag, select, remove, dimensions, etc.)
   const onNodesChange = useCallback(
     (changes) => {
-      setNodes((nds) => {
-        let updated = [...nds];
-        for (const change of changes) {
-          if (change.type === 'position' && change.position) {
-            updated = updated.map((n) =>
-              n.id === change.id ? { ...n, position: change.position } : n
-            );
-          }
-          if (change.type === 'remove') {
-            updated = updated.filter((n) => n.id !== change.id);
-          }
-          if (change.type === 'select') {
-            updated = updated.map((n) =>
-              n.id === change.id ? { ...n, selected: change.selected } : n
-            );
-          }
-        }
-        return updated;
-      });
+      setNodes((nds) => applyNodeChanges(changes, nds));
     },
     [setNodes]
   );
 
-  // Handle edge changes (remove)
+  // Handle edge changes (remove, select, etc.)
   const onEdgesChange = useCallback(
     (changes) => {
-      setEdges((eds) => {
-        let updated = [...eds];
-        for (const change of changes) {
-          if (change.type === 'remove') {
-            updated = updated.filter((e) => e.id !== change.id);
-          }
-          if (change.type === 'select') {
-            updated = updated.map((e) =>
-              e.id === change.id ? { ...e, selected: change.selected } : e
-            );
-          }
-        }
-        return updated;
-      });
+      setEdges((eds) => applyEdgeChanges(changes, eds));
     },
     [setEdges]
   );
@@ -160,9 +131,11 @@ function FlowCanvasInner({ nodes, edges, setNodes, setEdges }) {
         nodeTypes={nodeTypes}
         fitView
         deleteKeyCode="Delete"
+        connectionRadius={50}
+        connectionMode="loose"
         defaultEdgeOptions={{
           type: 'smoothstep',
-          style: { stroke: '#c8c4b8', strokeWidth: 1.5 },
+          style: { stroke: '#c8c4b8', strokeWidth: 2 },
         }}
         proOptions={{ hideAttribution: true }}
       >
